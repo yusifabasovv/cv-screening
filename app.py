@@ -106,7 +106,5 @@ def run_gradio():
 
 
 if __name__ == "__main__":
-    #run_gradio()
-    print(validate_candidate('files/Lalə Qaralı Nadirova.pdf', 
-                    'files/Advanced Analytics Product Owner EN - 06072023.docx',
-                   temperature=0.7))
+    run_gradio()
+
