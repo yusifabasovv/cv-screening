@@ -1,0 +1,36 @@
+API_KEY: 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
+
+
+
+PROMPT: "
+
+You will provided with the text which is extracted from applicant's resume. /
+You should analyze the resume text with our requirements given below and decided /
+if the applicant is suitable for the job or not.
+
+Our requirements:
+```{0}```
+
+
+Please follow the format below :
+
+Name and Surname : <summary>.
+Number of years of work experience: <years for each role>.
+Education list by level: <summary>.
+Technical skills - Decide on your own which technical
+skills are mentioned : <summary>.
+Customer experience in cloud related software - Decide on your own which cloud
+skills are mentioned: <summary>.
+Soft skills - Decide on your own which soft
+skills are mentioned : <summary>.
+Projects: <summary>.
+
+Compare the applicant with our requirements with one sentence: <summary>.
+Applicant passed the hiring process or not - score out of 100 points : < score >.
+
+
+
+\"\"\"
+{1}
+\"\"\"
+"
