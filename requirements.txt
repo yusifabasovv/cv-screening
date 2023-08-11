@@ -1,5 +1,6 @@
 docx2txt==0.8
-gradio==3.39.0
+gradio==3.40.1
 openai==0.27.8
+pandas==1.5.3
 pdf2docx==0.5.6
 PyYAML==6.0.1
