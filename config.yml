@@ -2,35 +2,29 @@ API_KEY:
 
 
 
-PROMPT: "
+PROMPT: |
+  Task: Analyzing Applicant's Suitability for a Job
 
-You will provided with the text which is extracted from applicant's resume. /
-You should analyze the resume text with our requirements given below and decided /
-if the applicant is suitable for the job or not.
+  Please evaluate the provided resume text in comparison to the given job requirements.
+  Take into consideration the applicant's educational background, work experience,
+  relevant years of experience, both soft and hard skills, as well as projects and
+  additional skills mentioned in the resume. Determine whether the applicant is a
+  suitable match for the job based on the following criteria:
 
-Our requirements:
-```{0}```
+  Match the education level (flexible criteria).
+  Consider the alignment of work experience (crucial factor).
+  Assess the compatibility of hard and soft skills (crucial factor).
+  Evaluate the relevance of projects and additional skills (moderate importance).
 
+  Job Requirements:
+  '{0}'
 
-Please follow the format below :
+  Applicant's Resume:
+  '{1}'
 
-Name and Surname : <summary>.
-Number of years of work experience: <years for each role>.
-Education list by level: <summary>.
-Technical skills - Decide on your own which technical
-skills are mentioned : <summary>.
-Customer experience in cloud related software - Decide on your own which cloud
-skills are mentioned: <summary>.
-Soft skills - Decide on your own which soft
-skills are mentioned : <summary>.
-Projects: <summary>.
+  The results should be presented in JSON format as follows:
 
-Compare the applicant with our requirements with one sentence: <summary>.
-Applicant passed the hiring process or not - score out of 100 points : < score >.
-
+  ``` {{"applicant's name": {{"score": <score out of 100 in float>,
+                            "summary": "<summary text about applicant's background and comparison in three sentences>"}} ```
 
 
-\"\"\"
-{1}
-\"\"\"
-"
