@@ -1,7 +1,12 @@
-import docx2txt
-import pdf2docx
-import openai
+import asyncio
+import time
+import json
 import gradio as gr
+import pandas as pd
+import pdf2docx
+import docx2txt
+import openai
+from typing import List, Union
 import utils
 
 # Read configuration from YAML file
@@ -15,7 +20,7 @@ class CVScreening:
     """Class for preprocessing files."""
 
     @classmethod
-    def convert_pdf_to_docx(cls, pdf_file_path, docx_file_path):
+    def convert_pdf_to_docx(cls, *, pdf_file_path: str, docx_file_path: str) -> None:
         """
         Convert a PDF file to DOCX format.
         
@@ -29,7 +34,7 @@ class CVScreening:
             print(f"Error: {e}")
 
     @classmethod
-    def extract_text_from_docx(cls, docx_file_path):
+    def extract_text_from_docx(cls, *, docx_file_path: str) -> str:
         """
         Extract text from a DOCX file.
         
@@ -47,7 +52,13 @@ class CVScreening:
             return ""
 
     @classmethod
-    def get_completion(cls, prompt: str, model: str, temperature: float = 0.7):
+    async def get_completion(
+        cls,
+        *,
+        prompt: str,
+        model: str,
+        temperature: float = 0.7
+    ) -> str:
         """
         Get model completion using OpenAI's Chat API.
         
@@ -60,48 +71,66 @@ class CVScreening:
             str: Generated text by the model.
         """
         messages = [{"role": "user", "content": prompt}]
-        response = openai.ChatCompletion.create(
+        response = await openai.ChatCompletion.acreate(
             model=model,
             messages=messages,
             temperature=temperature,
         )
+        
+        time.sleep(5)
+
         return response.choices[0].message["content"]
 
-def validate_candidate(pdf_file_path, docx_requirements_path, temperature, model: str = "gpt-3.5-turbo"):
+async def validate_candidate(
+    pdf_file_paths: List[str],
+    docx_requirements_path: str,
+    temperature: float,
+    model: str = "gpt-3.5-turbo"
+) -> pd.DataFrame:
     """
     Perform candidate validation using GPT model.
     
     Args:
-        pdf_file_path (str): Path to CV file in PDF format.
+        pdf_file_paths (List[str]): Paths to CV files in PDF format.
         docx_requirements_path (str): Path to requirements file for the position in DOCX format.
         temperature (float): GPT model temperature parameter.
         model (str): GPT model type.
         
     Returns:
-        str: Generated text by the model.
+        pd.DataFrame: Generated text by the model.
     """
-    try:
-        pdf_file = pdf_file_path.name if hasattr(pdf_file_path, 'name') else pdf_file_path
-    except Exception as e:
-        print(f"Error: {e}")
-        return ""
+    
+    docx_text = CVScreening.extract_text_from_docx(docx_file_path=docx_requirements_path)
+    
+    prompts = []
+    
+    for pdf in pdf_file_paths:
+        
+        try:
+            pdf_file = pdf.name if hasattr(pdf, 'name') else pdf
+        except Exception as e:
+            print(f"Error: {e}")
+            return pd.DataFrame()
 
-    docx_file_path = pdf_file.split(".pdf")[0] + ".docx"
+        docx_file_path = pdf_file.split(".pdf")[0] + ".docx"
 
-    CVScreening.convert_pdf_to_docx(pdf_file, docx_file_path)
-    pdf_text = CVScreening.extract_text_from_docx(docx_file_path)
-    docx_text = CVScreening.extract_text_from_docx(docx_requirements_path)
+        CVScreening.convert_pdf_to_docx(pdf_file_path=pdf_file, docx_file_path=docx_file_path)
+        pdf_text = CVScreening.extract_text_from_docx(docx_file_path=docx_file_path)
+        
+        prompt = str(PROMPT.format(docx_text, pdf_text))
+        prompts.append(prompt)
+           
+    tasks = [CVScreening.get_completion(prompt=i, temperature=temperature, model=model) for i in prompts]
+    
+    L = await asyncio.gather(*tasks)
+    return pd.concat([pd.DataFrame(json.loads(i)).T for i in L]).reset_index().rename({"index": "name"}, axis=1)
 
-    prompt = str(PROMPT.format(docx_text, pdf_text))
-
-    return CVScreening.get_completion(prompt, temperature=temperature, model=model)
-
-def run_gradio():
+def run_gradio() -> None:
     # Create the Gradio interface
     iface = gr.Interface(
         fn=validate_candidate,
         inputs=[
-            gr.File(label="Upload PDF Resume", type="file", file_types=[".pdf"]),
+            gr.File(label="Upload PDF Resume", type="file", file_types=[".pdf"], file_count="multiple"),
             gr.File(label="Upload Requirements text", type="file", file_types=[".docx"]),
             gr.Slider(
                 minimum=0,
@@ -116,15 +145,17 @@ def run_gradio():
                 label="Model type",
             ),
         ],
-        outputs=gr.Textbox(
-            label="Resume summary", show_copy_button=True, show_label=True, lines=10
+        outputs=gr.DataFrame(
+            datatype=["str", "number", "str"],
+            headers=["Name", "Score", "Summary"]
         ),
         title="CV Screening",
         description="Upload a PDF resume and a text file, get summary text.",
     )
 
     # Launch the interface
-    iface.launch(share=True)
+    iface.launch()
+
 
 if __name__ == "__main__":
     run_gradio()
