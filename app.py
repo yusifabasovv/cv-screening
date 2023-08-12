@@ -130,7 +130,7 @@ async def validate_candidate(pdf_file_paths, docx_requirements_path, temperature
         prompt = str(PROMPT.format(docx_text, pdf_text))
         prompts.append(prompt)
            
-    tasks = [get_completion(i, temperature=temperature, model=model) for i in prompts]
+    tasks = [CVScreening.get_completion(i, temperature=temperature, model=model) for i in prompts]
     
     L = await asyncio.gather(*tasks)
     return pd.concat([pd.DataFrame(json.loads(i)).T for i in L]).reset_index().rename({"index": "name"}, axis=1)
