@@ -1,84 +1,98 @@
----
 
 # CV Screening Project
 
-The **CV Screening** project is a tool that allows users to assess the suitability of job applicants based on their CVs and job requirements. The system takes in a CV in PDF format and a job requirements document in DOCX format, processes the information, generates a summary of the CV, and provides a score indicating how well the applicant matches the job requirements.
-
-## Features
-
-- Converts PDF CVs to DOCX format for processing.
-- Extracts text from DOCX files.
-- Utilizes OpenAI's Chat API to generate summaries and scores.
-- Provides a user-friendly interface using Gradio.
+The **CV Screening** project is designed to streamline the process of evaluating job applicants' CVs against specific job requirements. Using natural language processing techniques, the project generates a summary of the CV and assesses the suitability of an applicant for a given job based on the provided requirements. Applicants submit their CVs in PDF format, while job requirements are uploaded in DOCX format.
 
 ## Folder Structure
 
 The project has the following folder structure:
 
 ```
-cv-screening/
-│-- app.py
-│-- config.yml
-│-- requirement.txt
-│-- utils.py
-│-- LICENSE
+cv-screening-project/
+│
+├── main.py
+├── config.yml
+├── utils.py
+├── requirements.txt
+├── LICENSE
+├── README.md
+├── app.py
 
 ```
 
-- `app.py`: The main Python script that contains the CVScreening class and functions for PDF to DOCX conversion, text extraction, and OpenAI integration. It also defines the user interface using Gradio.
-- `config.yml`: Configuration file that holds API keys and prompts for the OpenAI model.
-- `requirement.txt`: List of required Python libraries for the project.
-- `utils.py`: Utility functions, including a YAML file reader.
+## Project Overview
 
-## Getting Started
+The **CV Screening** project boasts the following key features:
+
+1. **Applicant Evaluation**: The project employs OpenAI's GPT models to evaluate the compatibility of an applicant's CV with the specified job requirements.
+
+2. **User-Friendly Interface**: The project presents a user-friendly web interface powered by the Gradio library, enabling users to seamlessly upload CVs and job requirement files, fine-tune advanced model parameters, and generate suitability scores.
+
+3. **Exportable Results**: Users have the option to export the evaluation results to a CSV file for further analysis.
+
+## Installation and Setup
+
+To set up the **CV Screening** project, follow these steps:
 
 1. Clone the repository:
 
-   ```bash
-   git clone https://github.com/your-username/cv-screening.git
-   cd cv-screening
-   ```
+```bash
+git clone https://github.com/your-username/cv-screening-project.git
+```
 
-2. Install the required libraries:
+2. Install the necessary dependencies:
 
-   ```bash
-   pip install -r requirement.txt
-   ```
+```bash
+pip install -r requirements.txt
+```
 
-3. Set up your OpenAI API key by adding it to the `config.yml` file.
+3. Obtain an OpenAI API Key: In order to utilize the GPT models, you'll need an API key from OpenAI. Place your API key in the `config.yml` file.
 
-4. Run the project:
+4. Launch the Application: Execute the `main.py` script to launch the Gradio interface.
 
-   ```bash
-   python app.py
-   ```
+```bash
+python main.py
+```
 
-5. Access the application by opening a web browser and navigating to the provided URL.
+5. Access the Interface: Open a web browser and navigate to the provided URL to access the **CV Screening** interface.
 
 ## Usage
 
-1. Upload one or more PDF resumes and a DOCX job requirements document.
-2. Adjust the model temperature and select the GPT model type.
-3. Click the "Submit" button to generate summaries and scores for each candidate.
+1. **Upload CV**: Upload the applicant's CV in PDF format.
 
-## Dependencies
+2. **Upload Requirements**: Upload the job requirements in DOCX format.
 
-- Python 3.6+
-- Libraries listed in `requirement.txt`
-- OpenAI API key
+3. **Advanced Options**: Customize the model's behavior using advanced options like temperature and model type.
 
-## Acknowledgements
+4. **Generate Output**: Click the "Generate output" button to initiate the evaluation process.
 
-- This project utilizes the OpenAI GPT models for text generation.
-- Gradio is used for creating the user interface.
+5. **View Results**: The output dataframe will display the applicant's name, suitability score, and summary.
+
+6. **Export Results**: Click the "Export" button to export the results to a CSV file.
+
+## Advanced Options
+
+- **Temperature**: The temperature parameter influences the variability and creativity of the model's responses. Higher values (closer to 1) lead to greater randomness, while lower values (closer to 0) make responses more deterministic.
+
+- **Model Type**: Choose between "gpt-3.5-turbo" and "gpt-4" for selecting the appropriate model.
+
+## Notes
+
+- The project's web interface leverages the Gradio library to provide a user-friendly and interactive experience for CV screening.
+
+- Asynchronous processing is implemented using asyncio to efficiently handle multiple CV evaluations.
+
+- The `utils.py` file contains utility functions for reading YAML configuration and formatting prompts.
+
+## Contribution
+
+Contributions to the **CV Screening** project are highly welcome! If you encounter any issues, have suggestions for improvements, or would like to contribute to the codebase, please feel free to open an issue or submit a pull request.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the [MIT License](LICENSE).
 
 ---
-
-Feel free to customize this template based on your project's specific details and requirements. Make sure to include any additional information that would be relevant to users who want to understand, use, or contribute to your CV Screening project.
 
 
 ``` !This doc is also generated by chatgpt ```
