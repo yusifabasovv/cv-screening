@@ -1,5 +1,3 @@
-Sure, here's a `README.md` template for your CV Screening project:
-
 ---
 
 # CV Screening Project
