@@ -91,7 +91,7 @@ class CVScreening:
             temperature=temperature,
         )
         
-        time.sleep(5)
+        await asyncio.sleep(5)
 
         return response.choices[0].message["content"]
     
